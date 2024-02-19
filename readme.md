@@ -29,9 +29,17 @@ To use GitMan, follow these steps:
     ```
     gitman -L
     ```
+3. Remove package:
+    ```
+    gitman -R <package_name>
+    ```
+    Replace `<package_name>` with the name of the package you want to remove.
 
 ## Example
 
 ```bash
+# To install 'hellocpp'
 gitman -S hellocpp
+# To remove 'hellocpp'
+gitman -R hellocpp
 ```
