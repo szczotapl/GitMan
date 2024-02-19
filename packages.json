@@ -3,5 +3,6 @@
     {"name": "gfetch", "repository": "https://github.com/riviox/gfetch.git"},
     {"name": "hellocpp", "repository": "https://github.com/riviox/hellocpp.git"},
     {"name": "minifetch", "repository": "https://github.com/riviox/Minifetch.git"},
-    {"name": "neofetch", "repository": "https://github.com/dylanaraps/neofetch.git"}
+    {"name": "neofetch", "repository": "https://github.com/dylanaraps/neofetch.git"},
+    {"name": "yay", "repository": "https://github.com/Jguer/yay.git"}
 ]
