@@ -17,20 +17,21 @@ type Package struct {
 }
 
 const (
-	defaultInstallDir = ".gitman/packages"
-	defaultJSONURL    = "https://raw.githubusercontent.com/riviox/GitMan/main/packages.json"
+	defaultInstallDir  = ".gitman/packages"
+	defaultSourcesFile = ".gitman/config/sources.json"
+	defaultJSONURL     = "https://raw.githubusercontent.com/riviox/GitMan/main/packages.json"
 )
 
 var (
 	installDir  string
-	jsonURL     string
+	sourcesFile string
 	listFlag    bool
 	packageName string
 )
 
 func init() {
 	flag.StringVar(&installDir, "install-dir", defaultInstallDir, "Specify the installation directory")
-	flag.StringVar(&jsonURL, "json-url", defaultJSONURL, "Specify the URL for the packages.json file")
+	flag.StringVar(&sourcesFile, "sources-file", defaultSourcesFile, "Specify the sources configuration file")
 	flag.BoolVar(&listFlag, "L", false, "List available packages")
 	flag.StringVar(&packageName, "S", "", "Specify the package to install")
 	flag.Parse()
@@ -89,12 +90,14 @@ func cloneGitRepository(repository, installDir, packageName string) error {
 }
 
 func listPackages() {
-	jsonContent, err := downloadFile(jsonURL)
+	// Pobierz zawartość packages.json z domyślnego źródła
+	jsonContent, err := downloadFile(defaultJSONURL)
 	if err != nil {
 		fmt.Println("Error downloading packages.json:", err)
 		os.Exit(1)
 	}
 
+	// Parsuj packages.json i uzyskaj listę pakietów
 	packages, err := parsePackagesJSON(jsonContent)
 	if err != nil {
 		fmt.Println("Error parsing packages.json:", err)
@@ -122,12 +125,14 @@ func main() {
 
 		installDir := filepath.Join(homeDir, installDir)
 
-		jsonContent, err := downloadFile(jsonURL)
+		// Pobierz zawartość packages.json z domyślnego źródła
+		jsonContent, err := downloadFile(defaultJSONURL)
 		if err != nil {
 			fmt.Println("Error downloading packages.json:", err)
 			os.Exit(1)
 		}
 
+		// Parsuj packages.json i uzyskaj listę pakietów
 		packages, err := parsePackagesJSON(jsonContent)
 		if err != nil {
 			fmt.Println("Error parsing packages.json:", err)
@@ -135,6 +140,7 @@ func main() {
 		}
 
 		var selectedPackage Package
+		// Sprawdź, czy pakiet o podanej nazwie istnieje
 		for _, pkg := range packages {
 			if pkg.Name == packageName {
 				selectedPackage = pkg
@@ -145,6 +151,7 @@ func main() {
 		if selectedPackage.Name != "" {
 			fmt.Println("Package found:", selectedPackage.Name)
 
+			// Realizuj kroki instalacyjne
 			err := cloneGitRepository(selectedPackage.Repository, installDir, packageName)
 			if err != nil {
 				fmt.Println("Error cloning repository or making install:", err)
