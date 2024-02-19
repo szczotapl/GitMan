@@ -2,5 +2,6 @@
     {"name": "gitman", "repository": "https://github.com/riviox/GitMan.git"},
     {"name": "gfetch", "repository": "https://github.com/riviox/gfetch.git"},
     {"name": "hellocpp", "repository": "https://github.com/riviox/hellocpp.git"},
-    {"name": "minifetch", "repository": "https://github.com/riviox/Minifetch.git"}
+    {"name": "minifetch", "repository": "https://github.com/riviox/Minifetch.git"},
+    {"name": "neofetch", "repository": "https://github.com/dylanaraps/neofetch.git"}
 ]
