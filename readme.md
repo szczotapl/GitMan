@@ -10,6 +10,8 @@ To use GitMan, follow these steps:
     ```
     curl -sSL https://raw.githubusercontent.com/riviox/GitMan/main/install.sh | bash
     ```
+    * Dependencies:
+        - Go
 
 2. Install a package:
 
