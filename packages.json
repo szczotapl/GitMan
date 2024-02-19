@@ -1,4 +1,5 @@
 [
     {"name": "gitman", "repository": "https://github.com/riviox/GitMan.git"},
-    {"name": "gfetch", "repository": "https://github.com/riviox/gfetch.git"}
+    {"name": "gfetch", "repository": "https://github.com/riviox/gfetch.git"},
+    {"name": "hellocpp", "repository": "https://github.com/riviox/hellocpp.git"}
 ]
