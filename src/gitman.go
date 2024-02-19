@@ -27,15 +27,13 @@ var (
 	sourcesFile string
 	listFlag    bool
 	packageName string
-	removeFlag  bool
 )
 
 func init() {
 	flag.StringVar(&installDir, "install-dir", defaultInstallDir, "Specify the installation directory")
 	flag.StringVar(&sourcesFile, "sources-file", defaultSourcesFile, "Specify the sources configuration file")
 	flag.BoolVar(&listFlag, "L", false, "List available packages")
-	flag.StringVar(&packageName, "S", "", "Specify the package to install or remove")
-	flag.BoolVar(&removeFlag, "R", false, "Remove specified package")
+	flag.StringVar(&packageName, "S", "", "Specify the package to install")
 	flag.Parse()
 }
 
@@ -91,19 +89,6 @@ func cloneGitRepository(repository, installDir, packageName string) error {
 	return nil
 }
 
-func uninstallPackage(packageName, installDir string) error {
-	packageDir := filepath.Join(installDir, packageName)
-
-	// Usuń katalog pakietu
-	err := os.RemoveAll(packageDir)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Package '%s' uninstalled successfully!\n", packageName)
-	return nil
-}
-
 func listPackages() {
 	// Pobierz zawartość packages.json z domyślnego źródła
 	jsonContent, err := downloadFile(defaultJSONURL)
@@ -140,17 +125,6 @@ func main() {
 
 		installDir := filepath.Join(homeDir, installDir)
 
-		// Jeśli flaga -R jest ustawiona, odinstaluj pakiet
-		if removeFlag {
-			err := uninstallPackage(packageName, installDir)
-			if err != nil {
-				fmt.Println("Error uninstalling package:", err)
-				os.Exit(1)
-			}
-			return
-		}
-
-		// W przeciwnym razie zainstaluj pakiet
 		// Pobierz zawartość packages.json z domyślnego źródła
 		jsonContent, err := downloadFile(defaultJSONURL)
 		if err != nil {
