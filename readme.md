@@ -21,10 +21,15 @@ To use GitMan, follow these steps:
 2. Install a package:
 
     ```bash
-    ./gitman -S <package_name>
+    gitman -S <package_name>
     ```
 
     Replace `<package_name>` with the name of the package you want to install.
+
+3. List packages:
+    ```
+    gitman -L
+    ```
 
 ## Example
 
