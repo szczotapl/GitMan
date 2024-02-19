@@ -60,19 +60,21 @@ func parsePackagesJSON(jsonContent []byte) ([]Package, error) {
 	return packages, nil
 }
 
-func cloneGitRepository(repository, installDir string) error {
+func cloneGitRepository(repository, installDir, packageName string) error {
+	packageDir := filepath.Join(installDir, packageName)
+
 	err := os.MkdirAll(installDir, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
-	cmd := exec.Command("git", "clone", repository, installDir)
+	cmd := exec.Command("git", "clone", repository, packageDir)
 	err = cmd.Run()
 	if err != nil {
 		return err
 	}
 
-	err = os.Chdir(installDir)
+	err = os.Chdir(packageDir)
 	if err != nil {
 		return err
 	}
@@ -143,7 +145,7 @@ func main() {
 		if selectedPackage.Name != "" {
 			fmt.Println("Package found:", selectedPackage.Name)
 
-			err := cloneGitRepository(selectedPackage.Repository, installDir)
+			err := cloneGitRepository(selectedPackage.Repository, installDir, packageName)
 			if err != nil {
 				fmt.Println("Error cloning repository or making install:", err)
 				os.Exit(1)

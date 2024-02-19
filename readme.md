@@ -24,5 +24,5 @@ To use GitMan, follow these steps:
 ## Example
 
 ```bash
-./gitman -S gfetch
+gitman -S hellocpp
 ```
