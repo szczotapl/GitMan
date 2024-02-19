@@ -22,15 +22,17 @@ const (
 )
 
 var (
-	installDir string
-	jsonURL    string
-	listFlag   bool
+	installDir  string
+	jsonURL     string
+	listFlag    bool
+	packageName string
 )
 
 func init() {
 	flag.StringVar(&installDir, "install-dir", defaultInstallDir, "Specify the installation directory")
 	flag.StringVar(&jsonURL, "json-url", defaultJSONURL, "Specify the URL for the packages.json file")
 	flag.BoolVar(&listFlag, "L", false, "List available packages")
+	flag.StringVar(&packageName, "S", "", "Specify the package to install")
 	flag.Parse()
 }
 
@@ -70,9 +72,18 @@ func cloneGitRepository(repository, installDir string) error {
 		return err
 	}
 
+	err = os.Chdir(installDir)
+	if err != nil {
+		return err
+	}
+
 	installCmd := exec.Command("make", "install")
-	installCmd.Dir = installDir
-	return installCmd.Run()
+	err = installCmd.Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func listPackages() {
@@ -95,29 +106,12 @@ func listPackages() {
 }
 
 func main() {
-	args := os.Args
-
 	if listFlag {
 		listPackages()
 		return
 	}
 
-	if len(args) < 2 {
-		fmt.Println("Usage: gitman.go <options>")
-		flag.PrintDefaults()
-		os.Exit(1)
-	}
-
-
-	switch args[1] {
-	case "-S":
-		if len(args) != 3 {
-			fmt.Println("Usage: gitman.go -S <package_name>")
-			os.Exit(1)
-		}
-
-		packageName := args[2]
-
+	if packageName != "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
 			fmt.Println("Error getting user home directory:", err)
@@ -160,10 +154,9 @@ func main() {
 			fmt.Println("Package not found:", packageName)
 			os.Exit(1)
 		}
-	case "-L":
-		listPackages()
-	default:
-		fmt.Println("Unknown option:", args[1])
+	} else {
+		fmt.Println("Usage: gitman.go <options>")
+		flag.PrintDefaults()
 		os.Exit(1)
 	}
 }
