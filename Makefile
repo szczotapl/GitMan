@@ -1,5 +1,5 @@
 TARGET = gitman
-SRC = gitman.go
+SRC = src/gitman.go
 
 build: $(TARGET)
 

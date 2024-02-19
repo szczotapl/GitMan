@@ -29,14 +29,6 @@ var (
 	packageName string
 )
 
-func init() {
-	flag.StringVar(&installDir, "install-dir", defaultInstallDir, "Specify the installation directory")
-	flag.StringVar(&sourcesFile, "sources-file", defaultSourcesFile, "Specify the sources configuration file")
-	flag.BoolVar(&listFlag, "L", false, "List available packages")
-	flag.StringVar(&packageName, "S", "", "Specify the package to install")
-	flag.Parse()
-}
-
 func downloadFile(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -89,15 +81,48 @@ func cloneGitRepository(repository, installDir, packageName string) error {
 	return nil
 }
 
+func uninstallPackage(packageName, installDir string) error {
+	packageDir := filepath.Join(installDir, packageName)
+
+	if _, err := os.Stat(packageDir); os.IsNotExist(err) {
+		return fmt.Errorf("Package not found: %s", packageName)
+	}
+
+	err := os.Chdir(packageDir)
+	if err != nil {
+		return err
+	}
+
+	uninstallCmd := exec.Command("make", "uninstall")
+
+	output, err := uninstallCmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("Error uninstalling package: %s\n", err)
+		fmt.Printf("Command output:\n%s\n", output)
+		return err
+	}
+
+	err = os.Chdir("..")
+	if err != nil {
+		return err
+	}
+
+	err = os.RemoveAll(packageDir)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
 func listPackages() {
-	// Pobierz zawartość packages.json z domyślnego źródła
 	jsonContent, err := downloadFile(defaultJSONURL)
 	if err != nil {
 		fmt.Println("Error downloading packages.json:", err)
 		os.Exit(1)
 	}
 
-	// Parsuj packages.json i uzyskaj listę pakietów
 	packages, err := parsePackagesJSON(jsonContent)
 	if err != nil {
 		fmt.Println("Error parsing packages.json:", err)
@@ -111,6 +136,15 @@ func listPackages() {
 }
 
 func main() {
+	flag.StringVar(&installDir, "install-dir", defaultInstallDir, "Specify the installation directory")
+	flag.StringVar(&sourcesFile, "sources-file", defaultSourcesFile, "Specify the sources configuration file")
+	flag.BoolVar(&listFlag, "L", false, "List available packages")
+	flag.StringVar(&packageName, "S", "", "Specify the package to install")
+
+	uninstallFlag := flag.String("R", "", "Specify the package to uninstall")
+
+	flag.Parse()
+
 	if listFlag {
 		listPackages()
 		return
@@ -125,14 +159,12 @@ func main() {
 
 		installDir := filepath.Join(homeDir, installDir)
 
-		// Pobierz zawartość packages.json z domyślnego źródła
 		jsonContent, err := downloadFile(defaultJSONURL)
 		if err != nil {
 			fmt.Println("Error downloading packages.json:", err)
 			os.Exit(1)
 		}
 
-		// Parsuj packages.json i uzyskaj listę pakietów
 		packages, err := parsePackagesJSON(jsonContent)
 		if err != nil {
 			fmt.Println("Error parsing packages.json:", err)
@@ -140,7 +172,6 @@ func main() {
 		}
 
 		var selectedPackage Package
-		// Sprawdź, czy pakiet o podanej nazwie istnieje
 		for _, pkg := range packages {
 			if pkg.Name == packageName {
 				selectedPackage = pkg
@@ -151,18 +182,32 @@ func main() {
 		if selectedPackage.Name != "" {
 			fmt.Println("Package found:", selectedPackage.Name)
 
-			// Realizuj kroki instalacyjne
 			err := cloneGitRepository(selectedPackage.Repository, installDir, packageName)
 			if err != nil {
 				fmt.Println("Error cloning repository or making install:", err)
 				os.Exit(1)
 			}
-
 			fmt.Println("Package installed successfully!")
 		} else {
 			fmt.Println("Package not found:", packageName)
 			os.Exit(1)
 		}
+	} else if *uninstallFlag != "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			fmt.Println("Error getting user home directory:", err)
+			os.Exit(1)
+		}
+
+		installDir := filepath.Join(homeDir, installDir)
+
+		err = uninstallPackage(*uninstallFlag, installDir)
+		if err != nil {
+			fmt.Println("Error uninstalling package:", err)
+			os.Exit(1)
+		}
+
+		fmt.Println("Package uninstalled successfully!")
 	} else {
 		fmt.Println("Usage: gitman <options>")
 		flag.PrintDefaults()

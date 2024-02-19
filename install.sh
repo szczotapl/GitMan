@@ -7,6 +7,6 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 echo "The GitMan repository has been successfully cloned to ~/.gitman/src."
-cd ~/.gitman/src/src
+cd ~/.gitman/src
 make install
 echo "Successfully installed GitMan!"
