@@ -9,6 +9,8 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/fatih/color"
 )
 
 type Package struct {
@@ -97,7 +99,7 @@ func uninstallPackage(packageName, installDir string) error {
 
 	output, err := uninstallCmd.CombinedOutput()
 	if err != nil {
-		fmt.Printf("Error uninstalling package: %s\n", err)
+		color.Red("Error uninstalling package: %s\n", err)
 		fmt.Printf("Command output:\n%s\n", output)
 		return err
 	}
@@ -115,23 +117,22 @@ func uninstallPackage(packageName, installDir string) error {
 	return nil
 }
 
-
 func listPackages() {
 	jsonContent, err := downloadFile(defaultJSONURL)
 	if err != nil {
-		fmt.Println("Error downloading packages.json:", err)
+		color.Red("Error downloading packages.json: %s\n", err)
 		os.Exit(1)
 	}
 
 	packages, err := parsePackagesJSON(jsonContent)
 	if err != nil {
-		fmt.Println("Error parsing packages.json:", err)
+		color.Red("Error parsing packages.json: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("Available Packages:")
+	color.Green("Available Packages:\n")
 	for _, pkg := range packages {
-		fmt.Printf("- %s\n", pkg.Name)
+		color.Cyan("- %s\n", pkg.Name)
 	}
 }
 
@@ -153,7 +154,7 @@ func main() {
 	if packageName != "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Println("Error getting user home directory:", err)
+			color.Red("Error getting user home directory: %s\n", err)
 			os.Exit(1)
 		}
 
@@ -161,13 +162,13 @@ func main() {
 
 		jsonContent, err := downloadFile(defaultJSONURL)
 		if err != nil {
-			fmt.Println("Error downloading packages.json:", err)
+			color.Red("Error downloading packages.json: %s\n", err)
 			os.Exit(1)
 		}
 
 		packages, err := parsePackagesJSON(jsonContent)
 		if err != nil {
-			fmt.Println("Error parsing packages.json:", err)
+			color.Red("Error parsing packages.json: %s\n", err)
 			os.Exit(1)
 		}
 
@@ -180,22 +181,22 @@ func main() {
 		}
 
 		if selectedPackage.Name != "" {
-			fmt.Println("Package found:", selectedPackage.Name)
+			color.Green("Package found: %s\n", selectedPackage.Name)
 
 			err := cloneGitRepository(selectedPackage.Repository, installDir, packageName)
 			if err != nil {
-				fmt.Println("Error cloning repository or making install:", err)
+				color.Red("Error cloning repository or making install: %s\n", err)
 				os.Exit(1)
 			}
-			fmt.Println("Package installed successfully!")
+			color.Green("Package '%s' installed successfully!\n", packageName)
 		} else {
-			fmt.Println("Package not found:", packageName)
+			color.Red("Package not found: %s\n", packageName)
 			os.Exit(1)
 		}
 	} else if *uninstallFlag != "" {
 		homeDir, err := os.UserHomeDir()
 		if err != nil {
-			fmt.Println("Error getting user home directory:", err)
+			color.Red("Error getting user home directory: %s\n", err)
 			os.Exit(1)
 		}
 
@@ -203,13 +204,13 @@ func main() {
 
 		err = uninstallPackage(*uninstallFlag, installDir)
 		if err != nil {
-			fmt.Println("Error uninstalling package:", err)
+			color.Red("Error uninstalling package: %s\n", err)
 			os.Exit(1)
 		}
 
-		fmt.Println("Package uninstalled successfully!")
+		color.Green("Package uninstalled successfully!\n")
 	} else {
-		fmt.Println("Usage: gitman <options>")
+		color.Red("Usage: gitman <options>\n")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
