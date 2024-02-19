@@ -1,3 +1,8 @@
+![GitHub License](https://img.shields.io/github/license/riviox/Gitman) ![GitHub repo size](https://img.shields.io/github/repo-size/riviox/GitMan) ![GitHub Repo stars](https://img.shields.io/github/stars/riviox/GitMan) 
+
+
+
+______________________
 # GitMan
 
 GitMan is a simple package manager written in Go. It allows you to install packages from a centralized repository using Git.
