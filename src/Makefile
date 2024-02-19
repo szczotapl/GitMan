@@ -7,7 +7,7 @@ $(TARGET): $(SRC)
 	go build -o $(TARGET) $(SRC)
 
 install: $(TARGET)
-	cp $(TARGET) /usr/local/bin/$(TARGET)
+	sudo cp $(TARGET) /usr/local/bin/$(TARGET)
 
 clean:
 	rm -f $(TARGET)
