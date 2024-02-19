@@ -6,10 +6,9 @@ GitMan is a simple package manager written in Go. It allows you to install packa
 
 To use GitMan, follow these steps:
 
-1. Download the GitMan binary or build it from the source:
-
-    ```bash
-    make build
+1. Install GitMan with:
+    ```
+    curl -sSL https://raw.githubusercontent.com/riviox/GitMan/main/install.sh | bash
     ```
 
 2. Install a package:
