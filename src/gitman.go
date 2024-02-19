@@ -155,7 +155,7 @@ func main() {
 			os.Exit(1)
 		}
 	} else {
-		fmt.Println("Usage: gitman.go <options>")
+		fmt.Println("Usage: gitman <options>")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
