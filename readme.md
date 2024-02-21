@@ -16,6 +16,7 @@ To use GitMan, follow these steps:
     ```
     * Dependencies:
         - Go
+        - Git
 
 2. Install a package:
 
