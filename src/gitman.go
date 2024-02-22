@@ -9,13 +9,14 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-
+	"strings"
 	"github.com/fatih/color"
 )
 
 type Package struct {
-	Name       string `json:"name"`
-	Repository string `json:"repository"`
+	Name         string `json:"name"`
+	Repository   string `json:"repository"`
+	Dependencies string `json:"dependencies"`
 }
 
 const (
@@ -55,33 +56,39 @@ func parsePackagesJSON(jsonContent []byte) ([]Package, error) {
 	return packages, nil
 }
 
-func cloneGitRepository(repository, installDir, packageName string) error {
+func install(repository, installDir, packageName, dependencies string) error {
 	packageDir := filepath.Join(installDir, packageName)
+	displayDependencies(dependencies)
 
 	err := os.MkdirAll(installDir, os.ModePerm)
 	if err != nil {
 		return err
 	}
 
+	color.Green("Cloning repository...\n")
 	cmd := exec.Command("git", "clone", repository, packageDir)
 	err = cmd.Run()
 	if err != nil {
 		return err
 	}
-
-	err = os.Chdir(packageDir)
-	if err != nil {
-		return err
-	}
-
-	installCmd := exec.Command("make", "install")
-	err = installCmd.Run()
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
+
+func displayDependencies(dependencies string) {
+	dependencyList := strings.Fields(dependencies)
+	if len(dependencyList) > 0 {
+		fmt.Println("\n===================================")
+		fmt.Println("= Manual Installation Required!   =")
+		fmt.Println("===================================")
+		fmt.Println("Please install the dependencies manually and re-run this:")
+		for _, dep := range dependencyList {
+			fmt.Printf("- %s\n", dep)
+		}
+		fmt.Println("===================================")
+	}
+}
+
+
 
 func uninstallPackage(packageName, installDir string) error {
 	packageDir := filepath.Join(installDir, packageName)
@@ -183,7 +190,7 @@ func main() {
 		if selectedPackage.Name != "" {
 			color.Green("Package found: %s\n", selectedPackage.Name)
 
-			err := cloneGitRepository(selectedPackage.Repository, installDir, packageName)
+			err := install(selectedPackage.Repository, installDir, packageName, selectedPackage.Dependencies)
 			if err != nil {
 				color.Red("Error cloning repository or making install: %s\n", err)
 				os.Exit(1)
