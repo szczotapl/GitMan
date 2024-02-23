@@ -9,7 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
-	"strings"
+
 	"github.com/fatih/color"
 )
 
@@ -58,7 +58,7 @@ func parsePackagesJSON(jsonContent []byte) ([]Package, error) {
 
 func install(repository, installDir, packageName, dependencies string) error {
 	packageDir := filepath.Join(installDir, packageName)
-	displayDependencies(dependencies)
+	PrintAscii()
 
 	err := os.MkdirAll(installDir, os.ModePerm)
 	if err != nil {
@@ -71,24 +71,40 @@ func install(repository, installDir, packageName, dependencies string) error {
 	if err != nil {
 		return err
 	}
+
+	color.Green("Building Package...\n")
+	buildCmd := exec.Command("make", "install")
+	err = buildCmd.Run()
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
-func displayDependencies(dependencies string) {
-	dependencyList := strings.Fields(dependencies)
-	if len(dependencyList) > 0 {
-		fmt.Println("\n===================================")
-		fmt.Println("= Manual Installation Required!   =")
-		fmt.Println("===================================")
-		fmt.Println("Please install the dependencies manually and re-run this:")
-		for _, dep := range dependencyList {
-			fmt.Printf("- %s\n", dep)
-		}
-		fmt.Println("===================================")
-	}
+func PrintAscii() {
+	fmt.Print(" ██████  ██ ████████ ███    ███  █████  ███    ██ \n██       ██    ██    ████  ████ ██   ██ ████   ██ \n██   ███ ██    ██    ██ ████ ██ ███████ ██ ██  ██ \n██    ██ ██    ██    ██  ██  ██ ██   ██ ██  ██ ██ \n ██████  ██    ██    ██      ██ ██   ██ ██   ████\n")
 }
 
+func listPackages() {
+	PrintAscii()
+	jsonContent, err := downloadFile(defaultJSONURL)
+	if err != nil {
+		color.Red("Error downloading packages.json: %s\n", err)
+		os.Exit(1)
+	}
 
+	packages, err := parsePackagesJSON(jsonContent)
+	if err != nil {
+		color.Red("Error parsing packages.json: %s\n", err)
+		os.Exit(1)
+	}
+
+	color.Green("Available Packages:\n")
+	for _, pkg := range packages {
+		color.Cyan("- %s\n", pkg.Name)
+	}
+}
 
 func uninstallPackage(packageName, installDir string) error {
 	packageDir := filepath.Join(installDir, packageName)
@@ -121,26 +137,8 @@ func uninstallPackage(packageName, installDir string) error {
 		return err
 	}
 
+	color.Green("Package '%s' uninstalled successfully!\n", packageName)
 	return nil
-}
-
-func listPackages() {
-	jsonContent, err := downloadFile(defaultJSONURL)
-	if err != nil {
-		color.Red("Error downloading packages.json: %s\n", err)
-		os.Exit(1)
-	}
-
-	packages, err := parsePackagesJSON(jsonContent)
-	if err != nil {
-		color.Red("Error parsing packages.json: %s\n", err)
-		os.Exit(1)
-	}
-
-	color.Green("Available Packages:\n")
-	for _, pkg := range packages {
-		color.Cyan("- %s\n", pkg.Name)
-	}
 }
 
 func main() {
@@ -217,6 +215,7 @@ func main() {
 
 		color.Green("Package uninstalled successfully!\n")
 	} else {
+		PrintAscii()
 		color.Red("Usage: gitman <options>\n")
 		flag.PrintDefaults()
 		os.Exit(1)

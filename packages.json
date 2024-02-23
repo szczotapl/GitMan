@@ -5,5 +5,5 @@
     {"name": "minifetch", "repository": "https://github.com/riviox/Minifetch.git"},
     {"name": "neofetch", "repository": "https://github.com/dylanaraps/neofetch.git"},
     {"name": "yay", "repository": "https://github.com/Jguer/yay.git"},
-    {"name": "fancyclock", "repository": "https://github.com/riviox/FancyClock.git", "dependencies": "Go"}
+    {"name": "fancyclock", "repository": "https://github.com/riviox/FancyClock.git"}
 ]
