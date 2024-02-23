@@ -57,30 +57,37 @@ func parsePackagesJSON(jsonContent []byte) ([]Package, error) {
 }
 
 func install(repository, installDir, packageName, dependencies string) error {
-	packageDir := filepath.Join(installDir, packageName)
-	PrintAscii()
+    packageDir := filepath.Join(installDir, packageName)
+    PrintAscii()
 
-	err := os.MkdirAll(installDir, os.ModePerm)
-	if err != nil {
-		return err
-	}
+    err := os.MkdirAll(installDir, os.ModePerm)
+    if err != nil {
+        return err
+    }
 
-	color.Green("Cloning repository...\n")
-	cmd := exec.Command("git", "clone", repository, packageDir)
-	err = cmd.Run()
-	if err != nil {
-		return err
-	}
+    color.Green("Cloning repository...\n")
+    cmd := exec.Command("git", "clone", repository, packageDir)
+    err = cmd.Run()
+    if err != nil {
+        return err
+    }
 
-	color.Green("Building Package...\n")
-	buildCmd := exec.Command("make", "install")
-	err = buildCmd.Run()
-	if err != nil {
-		return err
-	}
+    // Change to the package directory
+    err = os.Chdir(packageDir)
+    if err != nil {
+        return err
+    }
 
-	return nil
+    color.Green("Building Package...\n")
+    buildCmd := exec.Command("make", "install")
+    err = buildCmd.Run()
+    if err != nil {
+        return err
+    }
+
+    return nil
 }
+
 
 func PrintAscii() {
 	fmt.Print(" ██████  ██ ████████ ███    ███  █████  ███    ██ \n██       ██    ██    ████  ████ ██   ██ ████   ██ \n██   ███ ██    ██    ██ ████ ██ ███████ ██ ██  ██ \n██    ██ ██    ██    ██  ██  ██ ██   ██ ██  ██ ██ \n ██████  ██    ██    ██      ██ ██   ██ ██   ████\n")
