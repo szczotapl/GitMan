@@ -9,12 +9,11 @@ $(TARGET): $(SRC)
 	go build -o $(TARGET) $(SRC)
 	go build -o $(TARGET_UPDATE) $(SRC_UPDATE)
 
-install: $(TARGET)
+install: build
 	sudo cp $(TARGET) /usr/local/bin/$(TARGET)
-	sudo cp $(TARGET_UPDATE) /usr/local/bin/$(TARGET_UPDATE)
+	@if [ -f "$(TARGET_UPDATE)" ]; then sudo cp $(TARGET_UPDATE) /usr/local/bin/$(TARGET_UPDATE); fi
 
 clean:
-	rm -f $(TARGET)
-	rm -f $(TARGET_UPDATE)
+	rm -f $(TARGET) $(TARGET_UPDATE)
 
 .PHONY: build install clean
