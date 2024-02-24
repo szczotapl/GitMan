@@ -135,7 +135,6 @@ func install(repository, installDir, packageName, dependencies string) error {
         return err
     }
 
-    // Change to the package directory
     err = os.Chdir(packageDir)
     if err != nil {
         return err
