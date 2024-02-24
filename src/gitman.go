@@ -32,6 +32,62 @@ var (
 	packageName string
 )
 
+func updatePackage(repository, installDir, packageName, dependencies string) error {
+	packageDir := filepath.Join(installDir, packageName)
+
+	if _, err := os.Stat(packageDir); os.IsNotExist(err) {
+		return fmt.Errorf("Package not found: %s", packageName)
+	}
+
+	color.Green("Updating repository...\n")
+
+	err := os.Chdir(packageDir)
+	if err != nil {
+		return err
+	}
+
+	pullCmd := exec.Command("git", "pull")
+	err = pullCmd.Run()
+	if err != nil {
+		return err
+	}
+
+	color.Green("Building Package...\n")
+
+	updateCmd := exec.Command("make", "update")
+	if err := updateCmd.Run(); err != nil {
+		color.Red("Error updating package: %s\n", err)
+		return err
+	}
+
+	return nil
+}
+
+
+func updateAllPackages(installDir string) {
+	color.Green("Updating all packages...\n")
+
+	dirs, err := filepath.Glob(filepath.Join(installDir, "*"))
+	if err != nil {
+		color.Red("Error listing packages: %s\n", err)
+		os.Exit(1)
+	}
+
+	for _, dir := range dirs {
+		packageName := filepath.Base(dir)
+
+		gitDir := filepath.Join(dir, ".git")
+		if _, err := os.Stat(gitDir); err == nil {
+			err := updatePackage("", installDir, packageName, "")
+			if err != nil {
+				color.Red("Error updating package '%s': %s\n", packageName, err)
+			} else {
+				color.Green("Package '%s' updated successfully!\n", packageName)
+			}
+		}
+	}
+}
+
 func downloadFile(url string) ([]byte, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -154,12 +210,43 @@ func main() {
 	flag.BoolVar(&listFlag, "L", false, "List available packages")
 	flag.StringVar(&packageName, "S", "", "Specify the package to install")
 
+	updateFlag := flag.String("U", "", "Update a specific package")
+	updateAllFlag := flag.Bool("Ua", false, "Update all packages")
 	uninstallFlag := flag.String("R", "", "Specify the package to uninstall")
 
 	flag.Parse()
 
 	if listFlag {
 		listPackages()
+		return
+	}
+
+	if *updateFlag != "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			color.Red("Error getting user home directory: %s\n", err)
+			os.Exit(1)
+		}
+
+		installDir := filepath.Join(homeDir, installDir)
+		err = updatePackage("", installDir, *updateFlag, "")
+		if err != nil {
+			color.Red("Error updating package: %s\n", err)
+			os.Exit(1)
+		}
+		color.Green("Package '%s' updated successfully!\n", *updateFlag)
+		return
+	}
+
+	if *updateAllFlag {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			color.Red("Error getting user home directory: %s\n", err)
+			os.Exit(1)
+		}
+
+		installDir := filepath.Join(homeDir, installDir)
+		updateAllPackages(installDir)
 		return
 	}
 
