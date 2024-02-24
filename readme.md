@@ -17,10 +17,14 @@ To use GitMan, follow these steps:
     * Dependencies:
         - Go
         - Git
-          - Install deps with pacnan:
+          - Install deps with pacman:
             ```
             sudo pacman -S go git
             ```
+    * To update GitMan run:
+    ```
+    gitman_update
+    ```
 
 2. Install a package:
 
