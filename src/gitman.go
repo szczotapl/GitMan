@@ -52,16 +52,23 @@ func updatePackage(repository, installDir, packageName, dependencies string) err
 		return err
 	}
 
-	color.Green("Building Package...\n")
+	color.Green("Running sudo make uninstall...\n")
+	uninstallCmd := exec.Command("sudo", "make", "uninstall")
+	err = uninstallCmd.Run()
+	if err != nil {
+		return err
+	}
 
-	updateCmd := exec.Command("make", "update")
-	if err := updateCmd.Run(); err != nil {
-		color.Red("Error updating package: %s\n", err)
+	color.Green("Running sudo make install...\n")
+	installCmd := exec.Command("sudo", "make", "install")
+	err = installCmd.Run()
+	if err != nil {
 		return err
 	}
 
 	return nil
 }
+
 
 
 func updateAllPackages(installDir string) {
