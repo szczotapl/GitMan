@@ -1,7 +1,7 @@
 TARGET = gitman
 TARGET_UPDATE = gitman_update
-SRC = src/gitman.go
-SRC_UPDATE = src-update/gitman_update.go
+SRC = ./src/
+SRC_UPDATE = ./src-update/
 
 build: $(TARGET)
 
