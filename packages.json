@@ -6,5 +6,6 @@
     {"name": "neofetch", "repository": "https://github.com/dylanaraps/neofetch.git"},
     {"name": "yay", "repository": "https://github.com/Jguer/yay.git"},
     {"name": "fancyclock", "repository": "https://github.com/riviox/FancyClock.git"},
-    {"name": "waifugenerator", "repository": "https://github.com/riviox/WaifuGenerator.git"}
+    {"name": "waifugenerator", "repository": "https://github.com/riviox/WaifuGenerator.git"},
+    {"name": "speedtest-ookla", "repository": "https://github.com/riviox/OoklaSpeedtest.git"}
 ]
