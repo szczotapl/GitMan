@@ -129,7 +129,7 @@ func install(repository, installDir, packageName, dependencies string) error {
     }
 
     color.Green("Cloning repository...\n")
-    cmd := exec.Command("git", "clone", repository, packageDir)
+    cmd := exec.Command("git", "clone", repository, packageDir, "--depth", "1")
     err = cmd.Run()
     if err != nil {
         return err
