@@ -14,7 +14,7 @@ gitman_dir="$HOME/.gitman/src"
 if [ -d "$gitman_dir" ]; then
     print_info "GitMan directory already exists at $gitman_dir."
 else
-    git clone https://github.com/riviox/GitMan.git "$gitman_dir" || print_error "Failed to clone the GitMan repository."
+    git clone https://github.com/riviox/GitMan.git "$gitman_dir" --depth 1 || print_error "Failed to clone the GitMan repository."
     print_info "GitMan repository cloned to $gitman_dir."
 fi
 
