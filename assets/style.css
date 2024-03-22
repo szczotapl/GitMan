@@ -1,0 +1,19 @@
+html {
+    background-color: rgb(29, 29, 29);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+#packages-list {
+    display: flex;
+    flex-direction: row;
+}
+
+#packages-list a {
+    color: white;
+    border-radius: 5px;
+    margin: 7px;
+    background-color: rgb(48, 77, 100);
+    padding: 5px;
+    text-decoration: none;
+}
