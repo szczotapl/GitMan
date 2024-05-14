@@ -3,7 +3,7 @@
     {"name": "gfetch", "repository": "https://github.com/riviox/gfetch.git"},
     {"name": "hellocpp", "repository": "https://github.com/riviox/hellocpp.git"},
     {"name": "minifetch", "repository": "https://github.com/riviox/Minifetch.git"},
-    {"name": "neofetch", "repository": "https://github.com/dylanaraps/neofetch.git"},
+    {"name": "rebornfetch", "repository": "https://github.com/riviox/rebornfetch.git"},
     {"name": "yay", "repository": "https://github.com/Jguer/yay.git"},
     {"name": "fancyclock", "repository": "https://github.com/riviox/FancyClock.git"},
     {"name": "waifugenerator", "repository": "https://github.com/riviox/WaifuGenerator.git"},
