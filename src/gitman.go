@@ -141,7 +141,7 @@ func install(repository, installDir, packageName, dependencies string) error {
     }
 
     color.Green("Building Package...\n")
-    buildCmd := exec.Command("make", "install")
+    buildCmd := exec.Command("sudo", "make", "install")
     err = buildCmd.Run()
     if err != nil {
         return err
@@ -187,7 +187,7 @@ func uninstallPackage(packageName, installDir string) error {
 		return err
 	}
 
-	uninstallCmd := exec.Command("make", "uninstall")
+	uninstallCmd := exec.Command("sudo", "make", "uninstall")
 
 	output, err := uninstallCmd.CombinedOutput()
 	if err != nil {
