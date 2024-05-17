@@ -9,5 +9,6 @@
     {"name": "waifugenerator", "repository": "https://github.com/riviox/WaifuGenerator.git"},
     {"name": "speedtest-ookla", "repository": "https://github.com/riviox/OoklaSpeedtest.git"},
     {"name": "nmgui", "repository": "https://github.com/riviox/NMGui.git"},
-    {"name": "pipes.sh", "repository": "https://github.com/pipeseroni/pipes.sh.git"}
+    {"name": "pipes.sh", "repository": "https://github.com/pipeseroni/pipes.sh.git"},
+    {"name": "flash", "repository": "https://github.com/riviox/flash"}
 ]
