@@ -1,0 +1,4 @@
+name=gitman
+desc=package manager written in go
+exec=bash install.sh
+deps=go
